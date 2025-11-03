@@ -1,0 +1,275 @@
+services:
+  # Token Service - Enhanced with idle/active management
+  dutchie-token-service:
+    build: .
+    container_name: dutchie-token-service
+    command: ["/usr/local/bin/start_with_xvfb.sh", "python", "dutchie_token_service.py"]
+    ports:
+      - "8888:8888"
+    environment:
+      - PYTHONPATH=/app
+      - DISPLAY=:99
+      - DOCKER_CONTAINER=true
+    volumes:
+      - ./age_verification_positions.json:/app/age_verification_positions.json
+      - ./dutchie_tokens:/app/tokens:rw
+    networks:
+      - dutchie-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8888/stats"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    depends_on:
+      - redis
+
+  # Browser Proxy Service
+  dutchie-browser-proxy:
+    build: .
+    container_name: dutchie-browser-proxy
+    command: python dutchie_browser_proxy.py
+    ports:
+      - "8889:8889"
+    environment:
+      - PYTHONPATH=/app
+      - DISPLAY=:99
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    networks:
+      - dutchie-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8889/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    depends_on:
+      - dutchie-token-service
+
+  # GraphQL Proxy Service
+  dutchie-graphql-proxy:
+    build: .
+    container_name: dutchie-graphql-proxy
+    command: python dutchie_graphql_proxy.py
+    ports:
+      - "8891:8891"
+    environment:
+      - PYTHONPATH=/app
+      - DOCKER_CONTAINER=true
+    networks:
+      - dutchie-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8891/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    depends_on:
+      - dutchie-token-service
+
+  # Redis for caching (from your performance system)
+  redis:
+    image: redis:7-alpine
+    container_name: dutchie-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - dutchie-network
+    restart: unless-stopped
+    command: redis-server --appendonly yes --maxmemory 2gb --maxmemory-policy allkeys-lru
+
+  # Nginx Load Balancer (for scaling multiple instances)
+  nginx:
+    image: nginx:alpine
+    container_name: dutchie-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - dutchie-network
+    restart: unless-stopped
+    depends_on:
+      - dutchie-token-service
+      - dutchie-browser-proxy
+      - dutchie-graphql-proxy
+
+networks:
+  dutchie-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+volumes:
+  redis-data:
+    driver: local  # DHT Coordinator Service - Manages distributed worker network
+  dht-coordinator:
+    build: .
+    container_name: dht-coordinator
+    command: python dht_coordinator.py
+    ports:
+      - "9000:9000"
+      - "9100:9100"  # Peer network port
+    environment:
+      - PYTHONPATH=/app
+      - DHT_COORDINATOR_HOST=0.0.0.0
+      - DHT_COORDINATOR_PORT=9000
+      - DHT_PEER_PORT=9100
+      - DHT_MAX_WORKERS=50
+      - DHT_MAX_PEERS=1000
+      - DHT_REPLICATION_FACTOR=3
+      - DHT_TASK_TIMEOUT=300
+      - DHT_HEARTBEAT_INTERVAL=30
+      - DHT_MAX_STORAGE_GB=100
+      - DHT_CACHE_TTL_HOURS=24
+      - DHT_PEER_SHARING=true
+      - DHT_STORAGE_PATH=/app/dht_cache
+      - REDIS_URL=redis://dutchie-redis:6379
+    volumes:
+      - ./dht_cache:/app/dht_cache
+    networks:
+      - dutchie-network
+      - dht-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    depends_on:
+      - redis
+
+  # DHT Worker Service - Processes cannabis data collection tasks
+  dht-worker-1:
+    build: .
+    container_name: dht-worker-1
+    command: python dht_worker.py
+    ports:
+      - "9001:9001"
+      - "9101:9101"  # Peer network port
+    environment:
+      - PYTHONPATH=/app
+      - DHT_COORDINATOR_HOST=dht-coordinator
+      - DHT_COORDINATOR_PORT=9000
+      - DHT_WORKER_PORT=9001
+      - DHT_PEER_PORT=9101
+      - DHT_HEARTBEAT_INTERVAL=30
+      - DHT_MAX_CONCURRENT_TASKS=1
+      - DHT_TASK_POLL_INTERVAL=5
+      - DHT_MAX_STORAGE_GB=50
+      - DHT_STORAGE_PATH=/app/dht_cache_worker1
+      - DHT_BOOTSTRAP_NODES=dht-coordinator:9100
+      - REDIS_URL=redis://dutchie-redis:6379
+    volumes:
+      - ./dht_cache_worker1:/app/dht_cache_worker1
+    networks:
+      - dutchie-network
+      - dht-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    depends_on:
+      - dht-coordinator
+      - dutchie-token-service
+      - dutchie-graphql-proxy
+
+  # DHT Worker Service 2 - Additional worker for load distribution
+  dht-worker-2:
+    build: .
+    container_name: dht-worker-2
+    command: python dht_worker.py
+    ports:
+      - "9002:9002"
+      - "9102:9102"  # Peer network port
+    environment:
+      - PYTHONPATH=/app
+      - DHT_COORDINATOR_HOST=dht-coordinator
+      - DHT_COORDINATOR_PORT=9000
+      - DHT_WORKER_PORT=9002
+      - DHT_PEER_PORT=9102
+      - DHT_HEARTBEAT_INTERVAL=30
+      - DHT_MAX_CONCURRENT_TASKS=1
+      - DHT_TASK_POLL_INTERVAL=5
+      - DHT_MAX_STORAGE_GB=50
+      - DHT_STORAGE_PATH=/app/dht_cache_worker2
+      - DHT_BOOTSTRAP_NODES=dht-coordinator:9100,dht-worker-1:9101
+      - REDIS_URL=redis://dutchie-redis:6379
+    volumes:
+      - ./dht_cache_worker2:/app/dht_cache_worker2
+    networks:
+      - dutchie-network
+      - dht-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    depends_on:
+      - dht-coordinator
+      - dutchie-token-service
+      - dutchie-graphql-proxy
+
+  # DHT Worker Service 3 - Additional worker for load distribution
+  dht-worker-3:
+    build: .
+    container_name: dht-worker-3
+    command: python dht_worker.py
+    ports:
+      - "9003:9003"
+      - "9103:9103"  # Peer network port
+    environment:
+      - PYTHONPATH=/app
+      - DHT_COORDINATOR_HOST=dht-coordinator
+      - DHT_COORDINATOR_PORT=9000
+      - DHT_WORKER_PORT=9003
+      - DHT_PEER_PORT=9103
+      - DHT_HEARTBEAT_INTERVAL=30
+      - DHT_MAX_CONCURRENT_TASKS=1
+      - DHT_TASK_POLL_INTERVAL=5
+      - DHT_MAX_STORAGE_GB=50
+      - DHT_STORAGE_PATH=/app/dht_cache_worker3
+      - DHT_BOOTSTRAP_NODES=dht-coordinator:9100,dht-worker-1:9101,dht-worker-2:9102
+      - REDIS_URL=redis://dutchie-redis:6379
+    volumes:
+      - ./dht_cache_worker3:/app/dht_cache_worker3
+    networks:
+      - dutchie-network
+      - dht-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9003/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    depends_on:
+      - dht-coordinator
+      - dutchie-token-service
+      - dutchie-graphql-proxy
+
+networks:
+  dutchie-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+  dht-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.21.0.0/16

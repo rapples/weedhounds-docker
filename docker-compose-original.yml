@@ -1,0 +1,113 @@
+services:
+  # Token Service - Enhanced with idle/active management
+  dutchie-token-service:
+    build: .
+    container_name: dutchie-token-service
+    command: ["/usr/local/bin/start_with_xvfb.sh", "python", "dutchie_token_service.py"]
+    ports:
+      - "8888:8888"
+    environment:
+      - PYTHONPATH=/app
+      - DISPLAY=:99
+      - DOCKER_CONTAINER=true
+    volumes:
+      - ./age_verification_positions.json:/app/age_verification_positions.json
+      - ./dutchie_tokens:/app/tokens:rw
+    networks:
+      - dutchie-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8888/stats"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    depends_on:
+      - redis
+
+  # Browser Proxy Service
+  dutchie-browser-proxy:
+    build: .
+    container_name: dutchie-browser-proxy
+    command: python dutchie_browser_proxy.py
+    ports:
+      - "8889:8889"
+    environment:
+      - PYTHONPATH=/app
+      - DISPLAY=:99
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    networks:
+      - dutchie-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8889/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    depends_on:
+      - dutchie-token-service
+
+  # GraphQL Proxy Service
+  dutchie-graphql-proxy:
+    build: .
+    container_name: dutchie-graphql-proxy
+    command: python dutchie_graphql_proxy.py
+    ports:
+      - "8891:8891"
+    environment:
+      - PYTHONPATH=/app
+      - DOCKER_CONTAINER=true
+    networks:
+      - dutchie-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8891/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    depends_on:
+      - dutchie-token-service
+
+  # Redis for caching (from your performance system)
+  redis:
+    image: redis:7-alpine
+    container_name: dutchie-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - dutchie-network
+    restart: unless-stopped
+    command: redis-server --appendonly yes --maxmemory 2gb --maxmemory-policy allkeys-lru
+
+  # Nginx Load Balancer (for scaling multiple instances)
+  nginx:
+    image: nginx:alpine
+    container_name: dutchie-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - dutchie-network
+    restart: unless-stopped
+    depends_on:
+      - dutchie-token-service
+      - dutchie-browser-proxy
+      - dutchie-graphql-proxy
+
+networks:
+  dutchie-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+volumes:
+  redis-data:
+    driver: local
