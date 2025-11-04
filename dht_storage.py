@@ -15,7 +15,7 @@ from typing import Dict, List, Optional, Any, Set, Tuple
 from dataclasses import dataclass, asdict
 from enum import Enum
 import aiofiles
-import aioredis
+import redis.asyncio as redis
 from pathlib import Path
 
 # Configure logging
@@ -139,7 +139,7 @@ class DHTStorage:
         """Initialize the storage system"""
         try:
             # Connect to Redis for coordination
-            self.redis = await aioredis.from_url(redis_url)
+            self.redis = redis.from_url(redis_url, decode_responses=True)
             
             # Load existing cache from disk
             await self.load_cache_from_disk()

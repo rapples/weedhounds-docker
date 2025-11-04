@@ -26,8 +26,7 @@ playwright>=1.40.0
 pyautogui>=0.9.54
 
 # Caching and performance
-redis>=5.0.0
-aioredis>=2.0.0
+redis>=4.5.0
 
 # Data processing and analytics
 pandas>=1.5.0
