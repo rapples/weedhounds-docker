@@ -33,7 +33,7 @@ The WeedHounds Cannabis Data Platform is a comprehensive, enterprise-grade solut
 - **Redis Coordination**: Inter-service communication and network coordination
 
 ### Unlimited Peer Network
-```
+
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │  Remote Peer 1  │◄──►│  Remote Peer 2  │◄──►│  Remote Peer N  │
 │  (Unlimited)    │    │  (Unlimited)    │    │  (Unlimited)    │
@@ -51,19 +51,19 @@ The WeedHounds Cannabis Data Platform is a comprehensive, enterprise-grade solut
 │ Distributed     │    │ Cannabis APIs   │    │ Storage Cache   │
 │ Workers 1-4     │    │ (Menu/Terpenes) │    │ (Multi-Year)    │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
-```
+
 
 ## 🚀 Quick Start
 
 ### 1. Prerequisites
-```bash
+
 # Ensure Docker and Docker Compose are installed
 docker --version
 docker-compose --version
-```
+
 
 ### 2. Launch Unlimited Peer System
-```bash
+
 # Start the unlimited peer-to-peer system
 ./manage_unlimited_peers.bat start
 
@@ -72,10 +72,10 @@ docker-compose --version
 
 # Monitor peer connections
 ./manage_unlimited_peers.bat peers
-```
+
 
 ### 3. Verify Unlimited Peer Network
-```bash
+
 # Check coordinator status
 curl http://localhost:8000/health
 
@@ -85,7 +85,7 @@ curl http://localhost:8000/peers/status
 # Test cannabis data APIs
 curl http://localhost:8000/cannabis/menu/test
 curl http://localhost:8000/cannabis/terpenes/test
-```
+
 
 ## 🌐 Unlimited Peer Network
 
@@ -103,7 +103,7 @@ curl http://localhost:8000/cannabis/terpenes/test
 - **Worker 4**: 9104 (distributed processing)
 
 ### Cannabis Data Types with TTL Policies
-```python
+python
 CANNABIS_DATA_TYPES = {
     'menu_data': {'ttl_hours': 2, 'max_size_mb': 100},      # Dispensary menus
     'strain_info': {'ttl_hours': 168, 'max_size_mb': 50},   # Strain information (1 week)
@@ -114,12 +114,12 @@ CANNABIS_DATA_TYPES = {
     'lab_results': {'ttl_hours': 8760, 'max_size_mb': 150}, # Lab testing (1 year)
     'user_reviews': {'ttl_hours': 168, 'max_size_mb': 100}  # Customer reviews (1 week)
 }
-```
+
 
 ## 🔌 Cannabis Data APIs
 
 ### Menu Data API
-```bash
+
 # Get dispensary menu with intelligent caching
 GET /cannabis/menu/{dispensary_id}
 
@@ -128,10 +128,10 @@ GET /cannabis/menu/search?query=sativa&location=california
 
 # Menu analytics with distributed processing
 GET /cannabis/menu/analytics/{dispensary_id}
-```
+
 
 ### Terpene Analysis API
-```bash
+
 # Get terpene profile with multi-year caching
 GET /cannabis/terpenes/{strain_id}
 
@@ -140,7 +140,7 @@ GET /cannabis/terpenes/similar/{strain_id}
 
 # Comprehensive terpene database search
 GET /cannabis/terpenes/search?profile=myrcene,limonene
-```
+
 
 ## 💾 Distributed Storage System
 
@@ -151,14 +151,14 @@ GET /cannabis/terpenes/search?profile=myrcene,limonene
 - **Cleanup Policies**: Intelligent storage optimization
 
 ### Storage Volumes
-```yaml
+yaml
 volumes:
-```
+
 
 ## 🔧 Management Commands
 
 ### System Management
-```bash
+
 # Start unlimited peer system
 ./manage_unlimited_peers.bat start
 
@@ -170,10 +170,10 @@ volumes:
 
 # Cleanup expired data network-wide
 ./manage_unlimited_peers.bat cleanup
-```
+
 
 ### Peer Network Management
-```bash
+
 # List all connected peers (unlimited)
 ./manage_unlimited_peers.bat peers
 
@@ -182,23 +182,23 @@ curl http://localhost:8000/peers/discovery
 
 # Force peer network refresh
 curl -X POST http://localhost:8000/peers/refresh
-```
+
 
 ## 📊 Monitoring & Analytics
 
 ### System Health Endpoints
-- `GET /health` - Overall system health
-- `GET /peers/health` - Peer network status
-- `GET /storage/health` - Distributed storage status
-- `GET /cache/stats` - Cache performance metrics
+- GET /health - Overall system health
+- GET /peers/health - Peer network status
+- GET /storage/health - Distributed storage status
+- GET /cache/stats - Cache performance metrics
 
 ### Cannabis Data Analytics
-- `GET /cannabis/analytics/menu` - Menu data insights
-- `GET /cannabis/analytics/terpenes` - Terpene analysis trends
-- `GET /cannabis/analytics/network` - Peer network performance
+- GET /cannabis/analytics/menu - Menu data insights
+- GET /cannabis/analytics/terpenes - Terpene analysis trends
+- GET /cannabis/analytics/network - Peer network performance
 
 ### Performance Metrics
-```bash
+
 # Cache hit rates across peer network
 curl http://localhost:8000/cache/hit-rates
 
@@ -207,12 +207,12 @@ curl http://localhost:8000/analytics/api-savings
 
 # Peer network efficiency metrics
 curl http://localhost:8000/peers/efficiency
-```
+
 
 ## 🛠️ Configuration
 
 ### Environment Variables (.env)
-```env
+env
 # Unlimited Peer Network Configuration
 MAX_PEERS=1000
 PEER_DISCOVERY_ENABLED=true
@@ -238,7 +238,7 @@ OTHER_API_KEY=your-other-api-key
 
 # Redis Coordination
 REDIS_URL=redis://redis:6379/0
-```
+
 
 ## 🔒 Security & Performance
 
@@ -259,30 +259,30 @@ REDIS_URL=redis://redis:6379/0
 ### Common Issues
 
 1. **Peer Discovery Problems**
-   ```bash
+   
    # Check peer discovery status
    ./manage_unlimited_peers.bat peers
    
    # Restart peer network service
-   ```
+   
 
 2. **Cache Performance Issues**
-   ```bash
+   
    # Monitor cache statistics
    ./manage_unlimited_peers.bat cache
    
    # Force cache cleanup
    ./manage_unlimited_peers.bat cleanup
-   ```
+   
 
 3. **Cannabis API Errors**
-   ```bash
+   
    # Test API endpoints
    curl http://localhost:8000/cannabis/menu/test
    curl http://localhost:8000/cannabis/terpenes/test
    
    # Check API key configuration
-   ```
+   
 
 ### Performance Tuning
 - **Peer Limits**: Adjust MAX_PEERS based on system capacity
@@ -293,7 +293,7 @@ REDIS_URL=redis://redis:6379/0
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create feature branch: `git checkout -b feature/unlimited-peer-enhancement`
+2. Create feature branch: git checkout -b feature/unlimited-peer-enhancement
 3. Implement changes with tests
 4. Submit pull request with detailed description
 
@@ -323,14 +323,14 @@ This project is licensed under the MIT License - see LICENSE file for details.
 
 
 #### Quick Start
-`ash
+
 # Full deployment (build, start, test)
 
 # Or step by step:
-`
+
 
 #### Individual Commands
-`ash
+
 
 
 # Check service health
@@ -342,7 +342,7 @@ This project is licensed under the MIT License - see LICENSE file for details.
 # Stop services
 
 # Clean up everything
-`
+
 
 
 #### Coordinator API (Port 9000)
@@ -361,21 +361,21 @@ This project is licensed under the MIT License - see LICENSE file for details.
 ### Example Usage
 
 #### Submit a Task
-`ash
+
   -H "Content-Type: application/json" \
   -d '{
     "store_id": "dispensary_123",
     "params": {"menu_type": "flower"},
     "priority": 1
   }'
-`
+
 
 #### Check Network Status
-`ash
-`
+
+
 
 #### Store Cannabis Data
-`ash
+
   -H "Content-Type: application/json" \
   -d '{
     "key": "strain_blue_dream",
@@ -386,35 +386,35 @@ This project is licensed under the MIT License - see LICENSE file for details.
       "terpenes": ["myrcene", "limonene"]
     }
   }'
-`
+
 
 ### Scaling Workers
 
 
-`ash
+
 # Scale to 5 workers
 
 # Or use the management script
-`
+
 
 ### Monitoring
 
 #### Real-time Monitoring
-`ash
+
 # Monitor network status
 
 # Watch coordinator logs
 
 # Check all service health
-`
+
 
 #### Service URLs
 
 ### Performance Tuning
 
 #### Environment Variables
-`ash
-`
+
+
 
 #### Resource Requirements
 - **Coordinator**: 512MB RAM, 1 CPU core
@@ -429,7 +429,7 @@ This project is licensed under the MIT License - see LICENSE file for details.
 4. **Slow task processing**: Scale workers or optimize task implementations
 
 #### Debug Commands
-`ash
+
 # Check container status
 docker-compose ps
 
@@ -438,7 +438,7 @@ docker-compose ps
 # Test connectivity
 
 # Run diagnostic tests
-`
+
 
 ### Development
 
