@@ -50,9 +50,23 @@ pydeck>=0.8.0
 # Additional dependencies for Docker deployment
 psutil>=5.9.0
 glob2>=0.7
+
 # DHT (Distributed Hash Table) Dependencies
 aiohttp>=3.8.5
 aiofiles>=23.2.1
 cryptography>=41.0.5
 python-dateutil>=2.8.2
-redis>=4.5.0
+
+# High-Performance Serialization Libraries
+msgpack>=1.0.7
+orjson>=3.9.10
+lz4>=4.3.2
+brotli>=1.1.0
+
+# Process Management and Monitoring
+psutil>=5.9.0
+setproctitle>=1.3.3
+
+# Advanced Networking
+aiodns>=3.1.1
+cchardet>=2.1.7
