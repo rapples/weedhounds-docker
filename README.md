@@ -331,17 +331,11 @@ This project is licensed under the MIT License - see LICENSE file for details.
 
 #### Individual Commands
 
-
-
-# Check service health
-
-# View logs
-
-# Run system tests
-
-# Stop services
-
-# Clean up everything
+ Check service health
+ View logs
+ Run system tests
+ Stop services
+ Clean up everything
 
 
 
