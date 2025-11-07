@@ -4,7 +4,7 @@
 
 ### Development Environment
 
-```bash
+bash
 # .env.development
 ENV=development
 DEBUG=true
@@ -41,11 +41,11 @@ JANE_API_KEY=The-development-api-key
 # Monitoring
 PROMETHEUS_ENABLED=false
 SENTRY_DSN=
-```
+
 
 ### Staging Environment
 
-```bash
+bash
 # .env.staging
 ENV=staging
 DEBUG=false
@@ -74,8 +74,8 @@ CACHE_ENABLED=true
 # Security
 SECRET_KEY=staging-ultra-secure-secret-key-here
 JWT_SECRET=staging-jwt-secret-key
-CORS_ORIGINS=https://staging.weedhounds.com
-ALLOWED_HOSTS=staging.weedhounds.com,staging-api.weedhounds.com
+CORS_ORIGINS=https://staging.domain.com
+ALLOWED_HOSTS=staging.domain.com,staging-api.domain.com
 
 # External APIs
 DUTCHIE_API_KEY=The-staging-api-key
@@ -86,11 +86,11 @@ WEEDMAPS_API_KEY=The-staging-api-key
 PROMETHEUS_ENABLED=true
 GRAFANA_ENABLED=true
 SENTRY_DSN=https://The-staging-sentry-dsn@sentry.io/project
-```
+
 
 ### Production Environment
 
-```bash
+bash
 # .env.production
 ENV=production
 DEBUG=false
@@ -149,8 +149,8 @@ REFRESH_TOKEN_EXPIRY=604800
 ENCRYPTION_KEY=production-encryption-key-here
 
 # CORS and Hosts
-CORS_ORIGINS=https://weedhounds.com,https://app.weedhounds.com
-ALLOWED_HOSTS=weedhounds.com,api.weedhounds.com,app.weedhounds.com
+CORS_ORIGINS=https://domain.com,https://app.domain.com
+ALLOWED_HOSTS=domain.com,api.domain.com,app.domain.com
 TRUSTED_PROXIES=10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
 
 # External API Keys
@@ -191,33 +191,33 @@ SENTRY_TRACES_SAMPLE_RATE=0.1
 
 # File Storage
 FILE_STORAGE_BACKEND=s3
-AWS_S3_BUCKET=weedhounds-prod-assets
+AWS_S3_BUCKET=domain-prod-assets
 AWS_S3_REGION=us-west-2
-CDN_URL=https://cdn.weedhounds.com
+CDN_URL=https://cdn.domain.com
 
 # Email Configuration
 EMAIL_BACKEND=ses
 AWS_SES_REGION=us-west-2
-DEFAULT_FROM_EMAIL=noreply@weedhounds.com
+DEFAULT_FROM_EMAIL=noreply@domain.com
 
 # Backup Configuration
 BACKUP_ENABLED=true
 BACKUP_FREQUENCY=daily
 BACKUP_RETENTION_DAYS=90
-BACKUP_S3_BUCKET=weedhounds-prod-backups
+BACKUP_S3_BUCKET=domain-prod-backups
 
 # SSL/TLS Configuration
 SSL_REDIRECT=true
 SECURE_HSTS_SECONDS=31536000
 SECURE_CONTENT_TYPE_NOSNIFF=true
 SECURE_BROWSER_XSS_FILTER=true
-```
+
 
 ## Application Configuration Files
 
 ### Main Application Config (`config/app.yaml`)
 
-```yaml
+
 # Application Configuration
 application:
   name: "Cannabis Data Platform"
@@ -329,8 +329,8 @@ performance:
 security:
   cors:
     origins: 
-      - "https://weedhounds.com"
-      - "https://app.weedhounds.com"
+      - "https://domain.com"
+      - "https://app.domain.com"
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
     headers: ["*"]
     credentials: true
@@ -386,11 +386,11 @@ external_apis:
     base_url: "https://api.weedmaps.com"
     timeout: 30
     retry_attempts: 3
-```
+
 
 ### Load Balancer Config (`config/load_balancer.yaml`)
 
-```yaml
+
 # Load Balancer Configuration
 load_balancer:
   algorithm: "cannabis_aware"
@@ -457,11 +457,11 @@ upstreams:
         weight: 2
       - server: "gpu-node-2:8001"
         weight: 2
-```
+
 
 ### Monitoring Config (`config/monitoring.yaml`)
 
-```yaml
+
 # Monitoring Configuration
 monitoring:
   prometheus:
@@ -525,8 +525,8 @@ monitoring:
         channel: "#cannabis-alerts"
         
       email:
-        to: ["ops@weedhounds.com"]
-        from: "alerts@weedhounds.com"
+        to: ["ops@domain.com"]
+        from: "alerts@domain.com"
         
       pagerduty:
         integration_key: "${PAGERDUTY_INTEGRATION_KEY}"
@@ -574,18 +574,18 @@ performance:
     enabled: true
     cpu_profiling: true
     memory_profiling: true
-```
+
 
 ## Security Configuration
 
 ### SSL/TLS Configuration
 
-```yaml
+
 # SSL/TLS Configuration
 ssl:
   enabled: true
-  certificate_path: "/etc/ssl/certs/weedhounds.crt"
-  private_key_path: "/etc/ssl/private/weedhounds.key"
+  certificate_path: "/etc/ssl/certs/domain.crt"
+  private_key_path: "/etc/ssl/private/domain.key"
   
   # SSL Settings
   protocols: ["TLSv1.2", "TLSv1.3"]
@@ -602,11 +602,10 @@ ssl:
   # Certificate Management
   auto_renewal: true
   renewal_days_before: 30
-```
+ 
 
 ### Authentication Configuration
-
-```yaml
+ 
 # Authentication Configuration
 authentication:
   jwt:
@@ -635,11 +634,9 @@ authentication:
     enabled: true
     methods: ["totp", "sms"]
     backup_codes: true
-```
-
+ 
 ## Backup Configuration
-
-```yaml
+ 
 # Backup Configuration
 backup:
   enabled: true
@@ -672,13 +669,12 @@ backup:
     bucket: "${BACKUP_S3_BUCKET}"
     region: "us-west-2"
     encryption: "AES256"
-```
+ 
 
 ## Environment-Specific Overrides
 
 ### Development Overrides
-
-```yaml
+ 
 # config/environments/development.yaml
 database:
   primary:
@@ -700,11 +696,11 @@ monitoring:
 security:
   cors:
     origins: ["*"]
-```
+ 
 
 ### Production Overrides
 
-```yaml
+ 
 # config/environments/production.yaml
 database:
   primary:
@@ -728,10 +724,7 @@ monitoring:
 security:
   cors:
     origins:
-      - "https://weedhounds.com"
-      - "https://app.weedhounds.com"
-```
-
----
-
-🌿 **Configuration complete!** The Cannabis Data Platform is now fully configured for development, staging, and production environments with enterprise-grade security and monitoring.
+      - "https://domain.com"
+      - "https://app.domain.com"
+ 
+🌿  The Cannabis Data Platform is now fully configured for development, staging, and production environments with enterprise-grade security and monitoring.
