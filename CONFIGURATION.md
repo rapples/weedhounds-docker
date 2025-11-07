@@ -35,8 +35,8 @@ CORS_ORIGINS=http://localhost:3000,http://localhost:8080
 ALLOWED_HOSTS=localhost,127.0.0.1
 
 # External APIs
-DUTCHIE_API_KEY=your-development-api-key
-JANE_API_KEY=your-development-api-key
+DUTCHIE_API_KEY=The-development-api-key
+JANE_API_KEY=The-development-api-key
 
 # Monitoring
 PROMETHEUS_ENABLED=false
@@ -78,14 +78,14 @@ CORS_ORIGINS=https://staging.weedhounds.com
 ALLOWED_HOSTS=staging.weedhounds.com,staging-api.weedhounds.com
 
 # External APIs
-DUTCHIE_API_KEY=your-staging-api-key
-JANE_API_KEY=your-staging-api-key
-WEEDMAPS_API_KEY=your-staging-api-key
+DUTCHIE_API_KEY=The-staging-api-key
+JANE_API_KEY=The-staging-api-key
+WEEDMAPS_API_KEY=The-staging-api-key
 
 # Monitoring
 PROMETHEUS_ENABLED=true
 GRAFANA_ENABLED=true
-SENTRY_DSN=https://your-staging-sentry-dsn@sentry.io/project
+SENTRY_DSN=https://The-staging-sentry-dsn@sentry.io/project
 ```
 
 ### Production Environment
@@ -154,11 +154,11 @@ ALLOWED_HOSTS=weedhounds.com,api.weedhounds.com,app.weedhounds.com
 TRUSTED_PROXIES=10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
 
 # External API Keys
-DUTCHIE_API_KEY=your-production-dutchie-api-key
-JANE_API_KEY=your-production-jane-api-key
-WEEDMAPS_API_KEY=your-production-weedmaps-api-key
-LEAFLY_API_KEY=your-production-leafly-api-key
-TERPENE_LAB_API_KEY=your-production-terpene-lab-key
+DUTCHIE_API_KEY=The-production-dutchie-api-key
+JANE_API_KEY=The-production-jane-api-key
+WEEDMAPS_API_KEY=The-production-weedmaps-api-key
+LEAFLY_API_KEY=The-production-leafly-api-key
+TERPENE_LAB_API_KEY=The-production-terpene-lab-key
 
 # Rate Limiting
 RATE_LIMIT_REQUESTS=10000
@@ -186,7 +186,7 @@ PROMETHEUS_ENABLED=true
 GRAFANA_ENABLED=true
 ELASTICSEARCH_URL=https://prod-elasticsearch:9200
 KIBANA_ENABLED=true
-SENTRY_DSN=https://your-production-sentry-dsn@sentry.io/project
+SENTRY_DSN=https://The-production-sentry-dsn@sentry.io/project
 SENTRY_TRACES_SAMPLE_RATE=0.1
 
 # File Storage
@@ -734,4 +734,4 @@ security:
 
 ---
 
-🌿 **Configuration complete!** Your Cannabis Data Platform is now fully configured for development, staging, and production environments with enterprise-grade security and monitoring.
+🌿 **Configuration complete!** The Cannabis Data Platform is now fully configured for development, staging, and production environments with enterprise-grade security and monitoring.
