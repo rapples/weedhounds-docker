@@ -36,7 +36,7 @@
 
 ### Core Dependencies
 
-```
+
 python>=3.8,<4.0
 fastapi>=0.104.0
 uvicorn[standard]>=0.24.0
@@ -46,66 +46,66 @@ polars>=0.19.0
 numpy>=1.24.0
 scipy>=1.11.0
 scikit-learn>=1.3.0
-```
+
 
 ### Database Dependencies
 
-```
+
 psycopg2-binary>=2.9.0
 sqlalchemy>=2.0.0
 alembic>=1.12.0
 redis>=5.0.0
-```
+
 
 ### GPU Dependencies (Optional)
 
-```
+
 cupy-cuda11x>=12.0.0  # For NVIDIA CUDA 11.x
 cupy-cuda12x>=12.0.0  # For NVIDIA CUDA 12.x
 pyopencl>=2023.1.0    # For OpenCL support
 torch>=2.1.0+cu118    # PyTorch with CUDA
 tensorflow-gpu>=2.13.0 # TensorFlow with GPU
-```
+
 
 ### Machine Learning Dependencies
 
-```
+
 torch>=2.1.0
 torchvision>=0.16.0
 tensorflow>=2.13.0
 transformers>=4.35.0
 huggingface-hub>=0.17.0
-```
+
 
 ### Monitoring Dependencies
 
-```
+
 prometheus-client>=0.18.0
 grafana-api>=1.0.3
 psutil>=5.9.0
 sentry-sdk>=1.38.0
-```
+
 
 ### Web Dependencies
 
-```
+
 jinja2>=3.1.0
 aiofiles>=23.2.0
 python-multipart>=0.0.6
-```
+
 
 ### Security Dependencies
 
-```
+
 cryptography>=41.0.0
 pyjwt>=2.8.0
 passlib[bcrypt]>=1.7.4
 python-jose[cryptography]>=3.3.0
-```
+
 
 ### Development Dependencies
 
-```
+
 pytest>=7.4.0
 pytest-asyncio>=0.21.0
 pytest-cov>=4.1.0
@@ -113,13 +113,13 @@ black>=23.9.0
 isort>=5.12.0
 flake8>=6.1.0
 mypy>=1.6.0
-```
+
 
 ## Environment Setup
 
 ### Python Environment
 
-```bash
+bash
 # Create virtual environment
 python -m venv cannabis-platform-env
 
@@ -135,11 +135,11 @@ pip install -r requirements.txt
 
 # Install GPU dependencies (if available)
 pip install -r requirements-gpu.txt
-```
+
 
 ### Docker Environment
 
-```dockerfile
+dockerfile
 # Dockerfile
 FROM python:3.11-slim
 
@@ -184,11 +184,11 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
 
 # Start command
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
-```
+
 
 ### Docker Compose Production
 
-```yaml
+
 version: '3.8'
 
 services:
@@ -311,7 +311,7 @@ volumes:
 networks:
   cannabis-network:
     driver: bridge
-```
+
 
 ## Performance Targets
 
@@ -492,4 +492,5 @@ networks:
 
 ---
 
-🌿 **Production-ready requirements defined!** Your Cannabis Data Platform meets enterprise-grade standards for performance, security, compliance, and scalability.
+🌿 **Production-ready requirements defined!** 
+This Cannabis Data Platform meets enterprise-grade standards for performance, security, compliance, and scalability.
